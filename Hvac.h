@@ -186,7 +186,7 @@ public:
     }
 
     float voltage = FanModes[0];
-    Serial.println(voltage);
+    
 
     if (value > 1) {
       voltage = FanModes[2];
@@ -306,9 +306,9 @@ private:
   /* OFF, AUTO, RANGE */
   static const uint8_t DialStepsFan   = 27;
   static const uint8_t FanMaxLevel    = 25;
-  const float FanMinVoltage           = 0.24;
+  const float FanMinVoltage           = 0.25;
   static const uint8_t FanModeCount   = 3;
-  const float FanModes[FanModeCount]  = { 4.95, 4.77, 4.66 };
+  const float FanModes[FanModeCount]  = { 4.95, 4.77, 4.66 }; //4.66
     
   /* AUTO, FACE, FACE & FEET, FEET, WINDOW & FEET, DEFROST */
   static const uint8_t AirductModeCount     = 6;
