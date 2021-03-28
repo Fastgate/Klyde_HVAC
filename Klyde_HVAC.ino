@@ -78,7 +78,7 @@ void loop() {
   
 
   hvac.update();
-  
+  updateCan();
   
 }
 

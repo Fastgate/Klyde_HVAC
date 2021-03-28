@@ -287,7 +287,7 @@ private:
   TimedOutput *recirculationButton  = new TimedOutput(new DigitalOutput(26));
   TimedOutput *airConditionButton   = new TimedOutput(new DigitalOutput(25));
   TimedOutput *steeringHeatButton   = new TimedOutput(new DigitalOutput(31));
-  TimedOutput *controlLED           = new TimedOutput(new DigitalOutput(13));
+  //TimedOutput *controlLED           = new TimedOutput(new DigitalOutput(13));
  
   DigitalInput *rearHeaterLed    = new DigitalInput(24, 20, LOW, INPUT);
   DigitalInput *freshAirLed      = new DigitalInput(5, 20, LOW, INPUT);
