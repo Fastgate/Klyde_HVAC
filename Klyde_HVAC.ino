@@ -1,5 +1,7 @@
 #include <SPI.h>
-#include <FlexCAN.h>
+#include <carduinotest.h>
+#include <FlexCAN_T4.h>
+//#include <FlexCAN.h>
 #include <arduinoIO.h>
 
 
@@ -47,7 +49,9 @@ SerialReader serialReader(128);
 /////////////////////////
 
 CanSniffer canSniffer;
-Obd2Helper obd2;
+//Obd2Helper obd2;
+
+Can can(&Serial);
 
 
 
@@ -62,7 +66,8 @@ void setup() {
   delay(500);
   statusInitSuccess.serialize(Serial);
 
-  Can0.begin(500000);
+  //Can0.begin(500000);
+  can.setup(500000, 500000);
 
 
   SPI.begin();

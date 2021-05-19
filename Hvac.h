@@ -40,7 +40,7 @@ public:
 
     SPI.begin();
 
-    this->setAirduct(2);
+    this->setAirduct(1);
     this->setFanLevel(0);
     this->setTemperature(18);
   }
@@ -280,16 +280,16 @@ private:
    */
   
    
-  DigitalOutput *airductSelect      = new DigitalOutput(30, LOW);
-  DigitalOutput *temperatureSelect  = new DigitalOutput(28, LOW);
-  DigitalOutput *fanSelect          = new DigitalOutput(29, LOW);
-  TimedOutput *rearHeaterButton     = new TimedOutput(new DigitalOutput(27));
-  TimedOutput *recirculationButton  = new TimedOutput(new DigitalOutput(26));
-  TimedOutput *airConditionButton   = new TimedOutput(new DigitalOutput(25));
-  TimedOutput *steeringHeatButton   = new TimedOutput(new DigitalOutput(31));
+  DigitalOutput *airductSelect      = new DigitalOutput(12, LOW);
+  DigitalOutput *temperatureSelect  = new DigitalOutput(14, LOW);
+  DigitalOutput *fanSelect          = new DigitalOutput(15, LOW);
+  TimedOutput *rearHeaterButton     = new TimedOutput(new DigitalOutput(10));
+  TimedOutput *recirculationButton  = new TimedOutput(new DigitalOutput(9));
+  TimedOutput *airConditionButton   = new TimedOutput(new DigitalOutput(8));
+  TimedOutput *steeringHeatButton   = new TimedOutput(new DigitalOutput(16));
   //TimedOutput *controlLED           = new TimedOutput(new DigitalOutput(13));
  
-  DigitalInput *rearHeaterLed    = new DigitalInput(24, 20, LOW, INPUT);
+  DigitalInput *rearHeaterLed    = new DigitalInput(7, 20, LOW, INPUT);
   DigitalInput *freshAirLed      = new DigitalInput(5, 20, LOW, INPUT);
   DigitalInput *recirculationLed = new DigitalInput(6, 20, LOW, INPUT);
   DigitalInput *airConditionLed  = new DigitalInput(2, 20, LOW, INPUT);
@@ -306,7 +306,7 @@ private:
   /* OFF, AUTO, RANGE */
   static const uint8_t DialStepsFan   = 27;
   static const uint8_t FanMaxLevel    = 25;
-  const float FanMinVoltage           = 0.25;
+  const float FanMinVoltage           = 0.24;
   static const uint8_t FanModeCount   = 3;
   const float FanModes[FanModeCount]  = { 4.95, 4.77, 4.66 }; //4.66
     
