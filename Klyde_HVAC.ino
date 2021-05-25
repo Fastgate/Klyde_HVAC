@@ -1,7 +1,6 @@
 #include <SPI.h>
-#include <carduinotest.h>
-#include <FlexCAN_T4.h>
 //#include <FlexCAN.h>
+#include <FlexCAN_T4.h>
 #include <arduinoIO.h>
 
 
@@ -18,6 +17,8 @@
 #define min(X, Y)  ((X) < (Y) ? (X) : (Y))
 #define max(X, Y)  ((X) > (Y) ? (X) : (Y))
 
+FlexCAN_T4<CAN1, RX_SIZE_256, TX_SIZE_16> can1;
+CAN_message_t canMessage;
 
   /////////////////////
  // MMI DEFINITIONS //
@@ -51,8 +52,6 @@ SerialReader serialReader(128);
 CanSniffer canSniffer;
 //Obd2Helper obd2;
 
-Can can(&Serial);
-
 
 
   //////////////////
@@ -67,7 +66,8 @@ void setup() {
   statusInitSuccess.serialize(Serial);
 
   //Can0.begin(500000);
-  can.setup(500000, 500000);
+  can1.begin();
+  can1.setBaudRate(500000);
 
 
   SPI.begin();
@@ -143,13 +143,13 @@ void readSerial(uint8_t type, uint8_t id, BinaryBuffer *payloadBuffer) {
 void updateCan() { 
   CAN_message_t canMessage;
  
-  while (Can0.available()) {
-    Can0.read(canMessage);
+  
+    can1.read(canMessage);
     canSniffer.update(canMessage);
     
 
     
-  }
+  
   
   //Serial.println(FLDoorSensor.getState());
 }
