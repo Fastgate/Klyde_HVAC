@@ -42,13 +42,13 @@ public:
 
     this->setAirduct(1);
     this->setFanLevel(0);
-    this->setTemperature(18);
+    this->setTemperature(20);
   }
   void update() {
     this->rearHeaterButton->update();
     this->recirculationButton->update();
     this->airConditionButton->update();
-    this->steeringHeatButton->update();
+    //this->steeringHeatButton->update();
    
     if (millis() - this->lastUpdate > UpdateRate) {
        this->climateControl->payload()->isRecirculation     = this->recirculationLed->getState();
@@ -67,10 +67,10 @@ public:
   void toggleRearHeater() {
     this->rearHeaterButton->set(HIGH, ButtonPressDuration);
   }
-  void toggleSteeringHeat() {
-    this->steeringHeatButton->set(HIGH, ButtonPressDuration);
-    //this->controlLED->set(HIGH, ButtonPressDuration);
-  }
+  void toggleSteeringHeat(boolean state) {
+      this->steeringHeatButton->toggle(!this->climateControl->payload()->isSteeringHeat);
+      this->climateControl->payload()->isSteeringHeat = state;
+    }
   void toggleRecirculation() {
     this->recirculationButton->set(HIGH, ButtonPressDuration);
   }
@@ -253,17 +253,20 @@ public:
         this->toggleAutomaticFan();
         break;
       case 0x11: // SteeringWheel button
-        this->toggleSteeringHeat();
-        //this->controlLED();
+        this->toggleSteeringHeat(HIGH);
         break;  
     }
   }
 private:
   void setDial(DigitalOutput *select, float voltage) {
+    
     select->activate();
+    SPI.beginTransaction(SPISettings(4000000, MSBFIRST, SPI_MODE0));
     SPI.transfer(0);
     SPI.transfer((int)roundf(voltage / 5.00 * 256 - 1));
+    SPI.endTransaction();
     select->deactivate();
+    
     }
 
   SerialDataPacket<ClimateControl> *climateControl = new SerialDataPacket<ClimateControl>(0x73, 0x63);
@@ -280,19 +283,19 @@ private:
    */
   
    
-  DigitalOutput *airductSelect      = new DigitalOutput(12, LOW);
+  DigitalOutput *airductSelect      = new DigitalOutput(17, LOW);
   DigitalOutput *temperatureSelect  = new DigitalOutput(14, LOW);
   DigitalOutput *fanSelect          = new DigitalOutput(15, LOW);
   TimedOutput *rearHeaterButton     = new TimedOutput(new DigitalOutput(10));
   TimedOutput *recirculationButton  = new TimedOutput(new DigitalOutput(9));
   TimedOutput *airConditionButton   = new TimedOutput(new DigitalOutput(8));
-  TimedOutput *steeringHeatButton   = new TimedOutput(new DigitalOutput(16));
+  DigitalOutput *steeringHeatButton   = new DigitalOutput(16, HIGH);
   //TimedOutput *controlLED           = new TimedOutput(new DigitalOutput(13));
  
-  DigitalInput *rearHeaterLed    = new DigitalInput(7, 20, LOW, INPUT);
-  DigitalInput *freshAirLed      = new DigitalInput(5, 20, LOW, INPUT);
-  DigitalInput *recirculationLed = new DigitalInput(6, 20, LOW, INPUT);
-  DigitalInput *airConditionLed  = new DigitalInput(2, 20, LOW, INPUT);
+  DigitalInput *rearHeaterLed    = new DigitalInput(7, 20, HIGH, INPUT);
+  DigitalInput *freshAirLed      = new DigitalInput(5, 20, HIGH, INPUT);
+  DigitalInput *recirculationLed = new DigitalInput(6, 20, HIGH, INPUT);
+  DigitalInput *airConditionLed  = new DigitalInput(2, 20, HIGH, INPUT);
  
   const unsigned int ButtonPressDuration = 300;
 
@@ -308,7 +311,7 @@ private:
   static const uint8_t FanMaxLevel    = 25;
   const float FanMinVoltage           = 0.24;
   static const uint8_t FanModeCount   = 3;
-  const float FanModes[FanModeCount]  = { 4.95, 4.77, 4.66 }; //4.66
+  const float FanModes[FanModeCount]  = { 4.95, 4.77, 4.66 };
     
   /* AUTO, FACE, FACE & FEET, FEET, WINDOW & FEET, DEFROST */
   static const uint8_t AirductModeCount     = 6;
