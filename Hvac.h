@@ -18,8 +18,6 @@ union ClimateControl {
   BitFieldMember<16, 8> desiredTemperature;
   BitFieldMember<24, 1> isAutoFan;
   BitFieldMember<25, 1> isSteeringHeat;
-  
-  
 };
 
 class Hvac {
@@ -40,16 +38,15 @@ public:
 
     SPI.begin();
 
-    this->setAirduct(1);
-    this->setFanLevel(0);
-    this->setTemperature(20);
+    this->setAirduct(2);
+    this->setFanLevel(2);
+    this->setTemperature(18);
   }
   void update() {
     this->rearHeaterButton->update();
     this->recirculationButton->update();
     this->airConditionButton->update();
-    //this->steeringHeatButton->update();
-   
+
     if (millis() - this->lastUpdate > UpdateRate) {
        this->climateControl->payload()->isRecirculation     = this->recirculationLed->getState();
        this->climateControl->payload()->isAcOn              = this->airConditionLed->getState();
@@ -186,7 +183,6 @@ public:
     }
 
     float voltage = FanModes[0];
-    
 
     if (value > 1) {
       voltage = FanModes[2];
@@ -244,7 +240,6 @@ public:
         if (payloadBuffer->available() > 0) {
           if (this->climateControl->payload()->isAutoFan) {
             this->setAutomaticFan(false);
-            //this->controlLED();
           }
           this->setFanLevel(payloadBuffer->readByte().data + 1);
         }
@@ -259,14 +254,10 @@ public:
   }
 private:
   void setDial(DigitalOutput *select, float voltage) {
-    
     select->activate();
-    SPI.beginTransaction(SPISettings(4000000, MSBFIRST, SPI_MODE0));
     SPI.transfer(0);
     SPI.transfer((int)roundf(voltage / 5.00 * 256 - 1));
-    SPI.endTransaction();
     select->deactivate();
-    
     }
 
   SerialDataPacket<ClimateControl> *climateControl = new SerialDataPacket<ClimateControl>(0x73, 0x63);
@@ -281,21 +272,18 @@ private:
    * initialized in constructor deleted in destructor.
    * Since this class will only be created once, we do not care. :-P
    */
-  
-   
-  DigitalOutput *airductSelect      = new DigitalOutput(17, LOW);
-  DigitalOutput *temperatureSelect  = new DigitalOutput(14, LOW);
-  DigitalOutput *fanSelect          = new DigitalOutput(15, LOW);
-  TimedOutput *rearHeaterButton     = new TimedOutput(new DigitalOutput(10));
-  TimedOutput *recirculationButton  = new TimedOutput(new DigitalOutput(9));
-  TimedOutput *airConditionButton   = new TimedOutput(new DigitalOutput(8));
-  DigitalOutput *steeringHeatButton   = new DigitalOutput(16, HIGH);
-  //TimedOutput *controlLED           = new TimedOutput(new DigitalOutput(13));
+  DigitalOutput *airductSelect        = new DigitalOutput(25, LOW);
+  DigitalOutput *temperatureSelect    = new DigitalOutput(26, LOW);
+  DigitalOutput *fanSelect            = new DigitalOutput(24, LOW);
+  DigitalOutput *steeringHeatButton   = new DigitalOutput(23, HIGH);
+  TimedOutput *rearHeaterButton       = new TimedOutput(new DigitalOutput(10));
+  TimedOutput *recirculationButton    = new TimedOutput(new DigitalOutput(6));
+  TimedOutput *airConditionButton     = new TimedOutput(new DigitalOutput(9));
  
-  DigitalInput *rearHeaterLed    = new DigitalInput(7, 20, HIGH, INPUT);
-  DigitalInput *freshAirLed      = new DigitalInput(5, 20, HIGH, INPUT);
-  DigitalInput *recirculationLed = new DigitalInput(6, 20, HIGH, INPUT);
-  DigitalInput *airConditionLed  = new DigitalInput(2, 20, HIGH, INPUT);
+  DigitalInput *rearHeaterLed         = new DigitalInput(28, 20, LOW, INPUT);
+  DigitalInput *freshAirLed           = new DigitalInput(30, 20, LOW, INPUT);
+  DigitalInput *recirculationLed      = new DigitalInput(29, 20, LOW, INPUT);
+  DigitalInput *airConditionLed       = new DigitalInput(31, 20, LOW, INPUT);
  
   const unsigned int ButtonPressDuration = 300;
 

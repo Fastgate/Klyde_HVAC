@@ -2,8 +2,7 @@
 #define CAN_H
 
 #include <arduinoIO.h>
-//#include <FlexCAN.h>
-#include <FlexCAN_T4.h>
+#include <FlexCAN.h>
 #include "Serial.h"
 
 struct CanData {
@@ -24,7 +23,7 @@ class CanInput : public Input {
     virtual boolean getState() { 
       return this->state;
     }
-    void update1(CAN_message_t canMessage) {
+    void update(CAN_message_t canMessage) {
       if (canMessage.id == this->canId) {
         this->state = canMessage.len >= this->byteNumber + 1 && (canMessage.buf[this->byteNumber] & this->bitMask) == this->bitMask;
       }
@@ -36,7 +35,7 @@ class CanInput : public Input {
     
     boolean state       = false;
 };
-/*
+
 class Obd2Helper {
   public:
   void sendRequest(uint8_t mode, uint8_t pid) {
@@ -45,10 +44,10 @@ class Obd2Helper {
      requestMessage.buf[0] = 2;
      requestMessage.buf[1] = mode;
      requestMessage.buf[2] = pid;
-     Can1.write(requestMessage);
+     Can0.write(requestMessage);
   }
 };
-*/
+
 class CanSniffer {
   public:
     CanSniffer() {
@@ -75,7 +74,6 @@ class CanSniffer {
   private:
     SerialDataPacket<CanData> *canSnifferPacket;
     boolean isActive = false;
-      
 };
 
 #endif
